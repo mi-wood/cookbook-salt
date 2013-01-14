@@ -19,6 +19,12 @@
 
 include_recipe "salt::apt"
 
+service "salt-master" do
+  supports :restart => true
+
+  action [ :enable, :start ]
+end
+
 package "salt-master" do
   action :install
 end

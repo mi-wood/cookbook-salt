@@ -72,7 +72,6 @@ This cookbook is using [ChefSpec](https://github.com/acrmp/chefspec) for testing
     $ bundle
     $ librarian-chef install
     $ ln -s ../ cookbooks/salt
-    $ foodcritic cookbooks/salt
     $ rspec cookbooks/salt
 
 License and Author

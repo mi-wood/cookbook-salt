@@ -19,6 +19,12 @@
 
 include_recipe "salt::apt"
 
+service "salt-minion" do
+  supports :restart => true
+
+  action [ :enable, :start ]
+end
+
 package "salt-minion" do
   action :install
 end
