@@ -1,5 +1,10 @@
 require "chefspec"
-require "spec_helper"
+require "chefspec/matchers/shared" # #render
+require "yaml"
+
+def load_yaml_for file, node
+  ::YAML.load render(file, node)
+end
 
 describe "salt::minion" do
   before { @chef_run = ::ChefSpec::ChefRunner.new.converge "salt::minion" }
@@ -22,7 +27,10 @@ describe "salt::minion" do
   end
 
   describe "minion conf" do
-    before { @file = "/etc/salt/minion" }
+    before do
+      @file = "/etc/salt/minion"
+      @yaml = load_yaml_for @chef_run.template(@file), @chef_run.node
+    end
 
     it "has proper owner" do
       @chef_run.template(@file).should be_owned_by("root", "root")
@@ -42,28 +50,23 @@ describe "salt::minion" do
     end
 
     it "has master" do
-      @chef_run.should create_file_with_content @file,
-        "master: salt"
+      @yaml['master'].should == "salt"
     end
 
     it "has master port" do
-      @chef_run.should create_file_with_content @file,
-        "master_port: 4506"
+      @yaml['master_port'].should == 4506
     end
 
     it "has user" do
-      @chef_run.should create_file_with_content @file,
-        "user: root"
+      @yaml['user'].should == "root"
     end
 
     it "has root dir" do
-      @chef_run.should create_file_with_content @file,
-        "root_dir: /"
+      @yaml['root_dir'].should == "/"
     end
 
     it "has pki dir" do
-      @chef_run.should create_file_with_content @file,
-        "pki_dir: /etc/salt/pki"
+      @yaml['pki_dir'].should == "/etc/salt/pki"
     end
 
     it "has id" do
@@ -72,14 +75,13 @@ describe "salt::minion" do
         n.set['salt']['minion'] = {}
         n.set['salt']['minion']['id'] = "foo-id"
       end.converge "salt::minion"
+      yaml = load_yaml_for chef_run.template(@file), chef_run.node
 
-      chef_run.should create_file_with_content @file,
-        "id: foo-id"
+      yaml['id'].should == "foo-id"
     end
 
     it "doesn't have id" do
-      @chef_run.should_not create_file_with_content @file,
-        "id: "
+      @yaml['id'].should be_nil
     end
 
     it "has append domain" do
@@ -88,39 +90,33 @@ describe "salt::minion" do
         n.set['salt']['minion'] = {}
         n.set['salt']['minion']['append_domain'] = "foo-domain"
       end.converge "salt::minion"
+      yaml = load_yaml_for chef_run.template(@file), chef_run.node
 
-      chef_run.should create_file_with_content @file,
-        "append_domain: foo-domain"
+      yaml['append_domain'].should == "foo-domain"
     end
 
     it "doesn't have append domain" do
-      @chef_run.should_not create_file_with_content @file,
-        "append_domain: "
+      @yaml['append_domain'].should be_nil
     end
 
     it "has sub timeout" do
-      @chef_run.should create_file_with_content @file,
-        "sub_timeout: 60"
+      @yaml['sub_timeout'].should == 60
     end
 
     it "has cachedir" do
-      @chef_run.should create_file_with_content @file,
-        "cachedir: /var/cache/salt"
+      @yaml['cachedir'].should == "/var/cache/salt"
     end
 
     it "has cache jobs" do
-      @chef_run.should create_file_with_content @file,
-        "cache_jobs: False"
+      @yaml['cache_jobs'].should be_false
     end
 
     it "has acceptance wait time" do
-      @chef_run.should create_file_with_content @file,
-        "acceptance_wait_time: 10"
+      @yaml['acceptance_wait_time'].should == 10
     end
 
     it "has dns check" do
-      @chef_run.should create_file_with_content @file,
-        "dns_check: True"
+      @yaml['dns_check'].should be
     end
 
     it "has disable modules" do
@@ -129,14 +125,13 @@ describe "salt::minion" do
         n.set['salt']['minion'] = {}
         n.set['salt']['minion']['disable_modules'] =  "[cmd,test]"
       end.converge "salt::minion"
+      yaml = load_yaml_for chef_run.template(@file), chef_run.node
 
-      chef_run.should create_file_with_content @file,
-        "disable_modules: [cmd,test]"
+      yaml['disable_modules'].should == ["cmd", "test"]
     end
 
     it "doesn't have disable modules" do
-      @chef_run.should_not create_file_with_content @file,
-        "disable_modules: "
+      @yaml['disable_modules'].should be_nil
     end
 
     it "has disable returners" do
@@ -145,34 +140,29 @@ describe "salt::minion" do
         n.set['salt']['minion'] = {}
         n.set['salt']['minion']['disable_returners'] =  "[]"
       end.converge "salt::minion"
+      yaml = load_yaml_for chef_run.template(@file), chef_run.node
 
-      chef_run.should create_file_with_content @file,
-        "disable_returners: []"
+      yaml['disable_returners'].should be_empty
     end
 
     it "doesn't have disable returners" do
-      @chef_run.should_not create_file_with_content @file,
-        "disable_returners: "
+      @yaml['disable_returners'].should be_nil
     end
 
     it "has module dirs" do
-      @chef_run.should create_file_with_content @file,
-        "module_dirs: []"
+      @yaml['module_dirs'].should be_empty
     end
 
     it "has returner dirs" do
-      @chef_run.should create_file_with_content @file,
-        "returner_dirs: []"
+      @yaml['returner_dirs'].should be_empty
     end
 
     it "has states dirs" do
-      @chef_run.should create_file_with_content @file,
-        "states_dirs: []"
+      @yaml['states_dirs'].should be_empty
     end
 
     it "has render dirs" do
-      @chef_run.should create_file_with_content @file,
-        "render_dirs: []"
+      @yaml['render_dirs'].should be_empty
     end
 
     it "has providers" do
@@ -184,49 +174,41 @@ describe "salt::minion" do
           "baz" => "qux"
         }
       end.converge "salt::minion"
+      yaml = load_yaml_for chef_run.template(@file), chef_run.node
 
-      chef_run.should create_file_with_content @file,
-        %r{^providers:\n  foo: bar\n  baz: qux\n}m
+      yaml['providers'].should == { "foo" => "bar", "baz" => "qux" }
     end
 
     it "doesn't have providers" do
-      @chef_run.should_not create_file_with_content @file,
-        %r{^providers:}
+      @yaml['providers'].should be_nil
     end
 
     it "has cython enable" do
-      @chef_run.should create_file_with_content @file,
-        "cython_enable: False"
+      @yaml['cython_enable'].should be_false
     end
 
     it "has renderer" do
-      @chef_run.should create_file_with_content @file,
-        "renderer: yaml_jinja"
+      @yaml['renderer'].should == "yaml_jinja"
     end
 
     it "has state verbose" do
-      @chef_run.should create_file_with_content @file,
-        "state_verbose: False"
+      @yaml['state_verbose'].should be_false
     end
 
     it "has autoload dynamic modules" do
-      @chef_run.should create_file_with_content @file,
-        "autoload_dynamic_modules: True"
+      @yaml['autoload_dynamic_modules'].should be_true
     end
 
     it "has clean dynamic modules" do
-      @chef_run.should create_file_with_content @file,
-        "clean_dynamic_modules: True"
+      @yaml['clean_dynamic_modules'].should be_true
     end
 
     it "has environment" do
-      @chef_run.should create_file_with_content @file,
-        "environment: None"
+      @yaml['environment'].should == "None"
     end
 
     it "has state top" do
-      @chef_run.should create_file_with_content @file,
-        "state_top: top.sls"
+      @yaml['state_top'].should == "top.sls"
     end
 
     it "has file roots" do
@@ -240,19 +222,17 @@ describe "salt::minion" do
           ]
         }
       end.converge "salt::minion"
+      yaml = load_yaml_for chef_run.template(@file), chef_run.node
 
-      chef_run.should create_file_with_content @file,
-        %r{^file_roots:\n  base:\n  - /foo\n  - /bar\n}m
+      yaml['file_roots'].should == { "base" => ["/foo", "/bar"] }
     end
 
     it "doesn't have file roots" do
-      @chef_run.should_not create_file_with_content @file,
-        %r{^file_roots:}
+      @yaml['file_roots'].should be_nil
     end
 
     it "has hash type" do
-      @chef_run.should create_file_with_content @file,
-        "hash_type: md5"
+      @yaml['hash_type'].should == "md5"
     end
 
     it "has pillar roots" do
@@ -265,34 +245,29 @@ describe "salt::minion" do
           ]
         }
       end.converge "salt::minion"
+      yaml = load_yaml_for chef_run.template(@file), chef_run.node
 
-      chef_run.should create_file_with_content @file,
-        %r{^pillar_roots:\n  base:\n  - /foo\n}m
+      yaml['pillar_roots'].should == { "base" => ["/foo"] }
     end
 
     it "doesn't have pillar roots" do
-      @chef_run.should_not create_file_with_content @file,
-        %r{^pillar_roots:}
+      @yaml['pillar_roots'].should be_nil
     end
 
     it "has open mode" do
-      @chef_run.should create_file_with_content @file,
-        "open_mode: False"
+      @yaml['open_mode'].should be_false
     end
 
     it "has multiprocessing" do
-      @chef_run.should create_file_with_content @file,
-        "multiprocessing: True"
+      @yaml['multiprocessing'].should be
     end
 
     it "has log file" do
-      @chef_run.should create_file_with_content @file,
-        "log_file: /var/log/salt/minion"
+      @yaml['log_file'].should == "/var/log/salt/minion"
     end
 
     it "has log level" do
-      @chef_run.should create_file_with_content @file,
-        "log_level: warning"
+      @yaml['log_level'].should == "warning"
     end
 
     it "has log granular levels" do
@@ -301,18 +276,17 @@ describe "salt::minion" do
         n.set['salt']['minion'] = {}
         n.set['salt']['minion']['log_granular_levels'] =  '{ "salt": "warning", "salt.modules": "debug"}'
       end.converge "salt::minion"
+      yaml = load_yaml_for chef_run.template(@file), chef_run.node
 
-      chef_run.should create_file_with_content @file,
-        'log_granular_levels: { "salt": "warning", "salt.modules": "debug"}'
+      yaml['log_granular_levels'].should == { "salt" => "warning", "salt.modules" => "debug" }
     end
 
     it "doesn't have log granular levels" do
-      @chef_run.should_not create_file_with_content @file,
-        %r{^log_granular_levels:}
+      @yaml['log_granular_levels'].should be_nil
     end
 
     it "restarts conserver-server" do
-      resource = [ "salt-minion", "service", "delayed" ]
+      resource = ["salt-minion", "service", "delayed"]
 
       @chef_run.template(@file).notifies(*resource).should be_true
     end

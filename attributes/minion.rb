@@ -18,7 +18,7 @@
 #
 
 default['salt']['minion']['master'] = "salt" 
-default['salt']['minion']['master_port'] = "4506"
+default['salt']['minion']['master_port'] = 4506
 default['salt']['minion']['user'] = "root"
 default['salt']['minion']['root_dir'] = "/"
 default['salt']['minion']['pki_dir'] = "/etc/salt/pki"
