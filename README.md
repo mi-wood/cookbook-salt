@@ -16,6 +16,9 @@ Requirements
 Attributes
 ==========
 
+* `default['salt']['custom_template_banner']` - Banner to add to templates
+  managed by chef.
+* `default['salt']['conf_dir']` - Salt's base configuration directory.
 * `default['salt']['apt']['uri']` - The base of the Debian distribution.
 * `default['salt']['apt']['distribution']` - This is usually your release's
   codename.
@@ -26,6 +29,80 @@ Attributes
   the repo should be retrieved.
 * `default['salt']['apt']['key']` - If a `keyserver` is provided, this is
   assumed to be the fingerprint.
+
+Minion configuration is handled via the following attributes.  View the
+minion template to better understand the options.
+
+* `default['salt']['minion']['master']`
+* `default['salt']['minion']['master_port']`
+* `default['salt']['minion']['user']`
+* `default['salt']['minion']['root_dir']`
+* `default['salt']['minion']['pki_dir']`
+* `default['salt']['minion']['id']`
+* `default['salt']['minion']['append_domain']`
+* `default['salt']['minion']['sub_timeout']`
+* `default['salt']['minion']['cachedir']`
+* `default['salt']['minion']['cache_jobs']`
+* `default['salt']['minion']['acceptance_wait_time']`
+* `default['salt']['minion']['dns_check']`
+* `default['salt']['minion']['disable_modules']`
+* `default['salt']['minion']['disable_returners']`
+* `default['salt']['minion']['module_dirs']`
+* `default['salt']['minion']['returner_dirs']`
+* `default['salt']['minion']['states_dirs']`
+* `default['salt']['minion']['render_dirs']`
+* `default['salt']['minion']['providers']`
+* `default['salt']['minion']['cython_enable']`
+* `default['salt']['minion']['renderer']`
+* `default['salt']['minion']['state_verbose']`
+* `default['salt']['minion']['autoload_dynamic_modules']`
+* `default['salt']['minion']['clean_dynamic_modules']`
+* `default['salt']['minion']['environment']`
+* `default['salt']['minion']['state_top']`
+* `default['salt']['minion']['file_client']`
+* `default['salt']['minion']['file_roots']`
+* `default['salt']['minion']['hash_type']`
+* `default['salt']['minion']['pillar_roots']`
+* `default['salt']['minion']['open_mode']`
+* `default['salt']['minion']['multiprocessing']`
+* `default['salt']['minion']['log_file']`
+* `default['salt']['minion']['log_level']`
+* `default['salt']['minion']['log_granular_levels']`
+
+
+default['salt']['minion']['providers']
+
+```json
+"salt": {
+    "minion":
+        "providers": {
+            "pkg", "yumpkg5"
+        }
+    }
+]
+```
+
+default['salt']['minion']['file_roots']
+
+```json
+"salt": {
+    "minion":
+        "file_roots": {
+            "base": [
+              "/srv/salt/dev/services",
+              "/srv/salt/dev/state"
+            ]
+        }
+    }
+]
+```
+
+
+
+default['salt']['minion']['pillar_roots']
+
+
+
 
 Usage
 =====
