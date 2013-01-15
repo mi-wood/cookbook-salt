@@ -7,7 +7,10 @@ def load_yaml_for file, node
 end
 
 describe "salt::minion" do
-  before { @chef_run = ::ChefSpec::ChefRunner.new.converge "salt::minion" }
+  before do
+    ::Chef::Recipe.any_instance.stub :search
+    @chef_run = ::ChefSpec::ChefRunner.new.converge "salt::minion"
+  end
 
   it "configures apt" do
     ::Chef::Recipe.any_instance.should_receive(:include_recipe).with "salt::apt"
@@ -51,6 +54,20 @@ describe "salt::minion" do
 
     it "has master" do
       @yaml['master'].should == "salt"
+    end
+
+    it "has master via search" do
+      result = [{
+        "fqdn" => "master.example.com"
+      }]
+      ::Chef::Recipe.any_instance.stub(:search).with(:node, "role:salt-master AND chef_environment:_default").and_return result
+      chef_run = ::ChefSpec::ChefRunner.new do |n|
+        n.set['salt'] = {}
+        n.set['salt']['master_search'] = "role:salt-master AND chef_environment:_default"
+      end.converge "salt::minion"
+      yaml = load_yaml_for chef_run.template(@file), chef_run.node
+
+      yaml['master'].should == "master.example.com"
     end
 
     it "has master port" do

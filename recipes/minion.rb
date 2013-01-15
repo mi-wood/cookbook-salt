@@ -21,20 +21,17 @@ require "yaml"
 
 include_recipe "salt::apt"
 
-service "salt-minion" do
-  supports :restart => true
-
-  action [ :enable, :start ]
-end
-
-package "salt-minion" do
-  action :install
-end
-
 def yamlize key, hash
   h = {}
   h[key] = hash.to_hash
   h.to_yaml.sub(/\A---\n/, "")
+end
+
+if node['salt']['master_search']
+  result = search :node, node["salt"]["master_search"]
+  master = result[0]['fqdn']
+else
+  master = node['salt']['minion']['master']
 end
 
 if node['salt']['minion']['providers']
@@ -49,6 +46,16 @@ if node['salt']['minion']['pillar_roots']
   pillar_roots = yamlize "pillar_roots", node['salt']['minion']['pillar_roots']
 end
 
+service "salt-minion" do
+  supports :restart => true
+
+  action [ :enable, :start ]
+end
+
+package "salt-minion" do
+  action :install
+end
+
 template ::File.join(node['salt']['conf_dir'], "minion") do
   source "minion.erb"
   owner  "root"
@@ -58,7 +65,8 @@ template ::File.join(node['salt']['conf_dir'], "minion") do
   variables(
     :providers    => providers,
     :file_roots   => file_roots,
-    :pillar_roots => pillar_roots
+    :pillar_roots => pillar_roots,
+    :master       => master
   )
 
   notifies :restart, "service[salt-minion]"

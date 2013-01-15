@@ -22,6 +22,7 @@ default['salt']['custom_template_banner'] = "
 # Do not edit, changes will be overwritten.
 "
 default['salt']['conf_dir'] = ::File.join ::File::SEPARATOR, "etc", "salt"
+default['salt']['master_search'] = nil # "role:salt-master AND chef_environment:#{node.chef_environment}"
 
 default['salt']['apt']['uri'] = "http://ppa.launchpad.net/saltstack/salt/ubuntu"
 default['salt']['apt']['distribution'] = "precise"

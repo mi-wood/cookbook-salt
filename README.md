@@ -16,6 +16,8 @@ Requirements
 Attributes
 ==========
 
+* `default['salt']['master_search']` - The search used to determine
+  the salt master, otherwise use `node['salt']['minion']['master']`.
 * `default['salt']['custom_template_banner']` - Banner to add to templates
   managed by chef.
 * `default['salt']['conf_dir']` - Salt's base configuration directory.
