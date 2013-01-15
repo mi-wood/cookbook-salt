@@ -97,12 +97,19 @@ default['salt']['minion']['file_roots']
 ]
 ```
 
-
-
 default['salt']['minion']['pillar_roots']
 
-
-
+```json
+"salt": {
+    "minion":
+        "pillar_roots": {
+            "base": [
+              "/srv/pillar"
+            ]
+        }
+    }
+]
+```
 
 Usage
 =====
