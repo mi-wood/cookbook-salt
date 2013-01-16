@@ -33,7 +33,9 @@ Attributes
   assumed to be the fingerprint.
 
 Minion configuration is handled via the following attributes.  View the
-minion template to better understand the options.
+minion template to better understand the options.  Did not implement the
+"module configuration" section of the config, since I do not understand
+it well enough yet.
 
 * `default['salt']['minion']['master']`
 * `default['salt']['minion']['master_port']`
