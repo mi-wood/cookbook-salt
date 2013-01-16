@@ -17,13 +17,11 @@
 # limitations under the License.
 #
 
-include_recipe "salt::apt"
-
-def yamlize key, enum
-  e = {}
-  e[key] = enum.kind_of?(Hash) ? enum.to_hash : enum
-  e.to_yaml.sub(/\A---\n/, "")
+class ::Chef::Recipe
+  include ::Opscode::Salt
 end
+
+include_recipe "salt::apt"
 
 if node['salt']['master']['include']
   incl = yamlize "include", node['salt']['master']['include']

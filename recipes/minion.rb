@@ -17,15 +17,11 @@
 # limitations under the License.
 #
 
-require "yaml"
+class ::Chef::Recipe
+  include ::Opscode::Salt
+end
 
 include_recipe "salt::apt"
-
-def yamlize key, hash
-  h = {}
-  h[key] = hash.to_hash
-  h.to_yaml.sub(/\A---\n/, "")
-end
 
 if node['salt']['master_search']
   result = search :node, node["salt"]["master_search"]
