@@ -1,10 +1,4 @@
-require "chefspec"
-require "chefspec/matchers/shared" # #render
-require "yaml"
-
-def load_yaml_for file, node
-  ::YAML.load render(file, node)
-end
+require "spec_helper"
 
 describe "salt::minion" do
   before do
@@ -302,7 +296,7 @@ describe "salt::minion" do
       @yaml['log_granular_levels'].should be_nil
     end
 
-    it "restarts conserver-server" do
+    it "restarts salt-minion" do
       resource = ["salt-minion", "service", "delayed"]
 
       @chef_run.template(@file).notifies(*resource).should be_true

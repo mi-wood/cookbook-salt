@@ -63,9 +63,11 @@ dns_check: <%= node['salt']['minion']['dns_check'] %>
 ##########################################
 # Disable specific modules. This allows the admin to limit the level of
 # access the master has to the minion
+#disable_modules: [cmd,test]
 <% if node['salt']['minion']['disable_modules'] -%>
 disable_modules: <%= node['salt']['minion']['disable_modules'] %>
 <% end -%>
+#disable_returners: []
 <% if node['salt']['minion']['disable_returners'] -%>
 disable_returners: <%= node['salt']['minion']['disable_returners'] -%>
 <% end -%>
@@ -214,7 +216,6 @@ log_level: <%= node['salt']['minion']['log_level'] %>
 #     'salt': 'warning',
 #     'salt.modules': 'debug'
 #   }
-#
 <% if node['salt']['minion']['log_granular_levels'] -%>
 log_granular_levels: <%= node['salt']['minion']['log_granular_levels'] %>
 <% end -%>

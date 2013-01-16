@@ -1,4 +1,4 @@
-require "chefspec"
+require "spec_helper"
 
 describe "salt::default" do
   it "installs minion" do

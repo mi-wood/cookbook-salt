@@ -10,18 +10,18 @@
 # Per default the master will automatically include all config files
 # from master.d/*.conf (master.d is a directory in the same directory
 # as the main master config file)
-#default_include: master.d/*.conf
+default_include: <%= node['salt']['master']['default_include'] %>
 
 # The address of the interface to bind to
-#interface: 0.0.0.0
+interface: <%= node['salt']['master']['interface'] %>
 
 # The tcp port used by the publisher
-#publish_port: 4505
+publish_port: <%= node['salt']['master']['publish_port'] %>
 
 # The user to run the salt-master as. Salt will update all permissions to
 # allow the specified user to run the master. If the modified files cause
 # conflicts set verify_env to False.
-#user: root
+user: <%= node['salt']['master']['user'] %>
 
 # Max open files
 # Each minion connecting to the master uses AT LEAST one file descriptor, the
@@ -38,53 +38,51 @@
 # hard limit. Raising the hard limit depends on your OS and/or distribution,
 # a good way to find the limit is to search the internet for(for example):
 #   raise max open files hard limit debian
-#
-#max_open_files: 100000
+max_open_files: <%= node['salt']['master']['max_open_files'] %>
 
 # The number of worker threads to start, these threads are used to manage
 # return calls made from minions to the master, if the master seems to be
 # running slowly, increase the number of threads
-#worker_threads: 5
+worker_threads: <%= node['salt']['master']['worker_threads'] %>
 
 # The port used by the communication interface. The ret (return) port is the
 # interface used for the file server, authentication, job returnes, etc.
-#ret_port: 4506
+ret_port: <%= node['salt']['master']['ret_port'] %>
 
 # Specify the location of the daemon process ID file
-#pidfile: /var/run/salt-master.pid
+pidfile: <%= node['salt']['master']['pidfile'] %>
 
 # The root directory prepended to these options: pki_dir, cachedir,
 # sock_dir, log_file, autosign_file, extension_modules
-#root_dir: /
+root_dir: <%= node['salt']['master']['root_dir'] %>
 
 # Directory used to store public key data
-#pki_dir: /etc/salt/pki/master
+pki_dir: <%= node['salt']['master']['pki_dir'] %>
 
 # Directory to store job and cache data
-#cachedir: /var/cache/salt/master
+cachedir: <%= node['salt']['master']['cachedir'] %>
 
 # Verify and set permissions on configuration directories at startup
-#verify_env: True
+verify_env: <%= node['salt']['master']['verify_env'] %>
 
 # Set the number of hours to keep old job information in the job cache
-#keep_jobs: 24
+keep_jobs: <%= node['salt']['master']['keep_jobs'] %>
 
 # Set the default timeout for the salt command and api, the default is 5
 # seconds
-#timeout: 5
+timeout: <%= node['salt']['master']['timeout'] %>
 
 # Set the directory used to hold unix sockets
-#sock_dir: /var/run/salt/master
+sock_dir: <%= node['salt']['master']['sock_dir'] %>
 
 # The master maintains a job cache, while this is a great addition it can be
 # a burden on the master for larger deployments (over 5000 minions).
 # Disabling the job cache will make previously executed jobs unavailable to
 # the jobs system and is not generally recommended.
-#
-#job_cache: True
+job_cache: <%= node['salt']['master']['job_cache'] %>
 
 # Cache minion grains and pillar data in the cachedir.
-#minion_data_cache: True
+minion_data_cache: <%= node['salt']['master']['minion_data_cache'] %>
 
 # The master can include configuration from other files. To enable this,
 # pass a list of paths to this option. The paths can be either relative or
@@ -100,7 +98,9 @@
 # Include config from several files and directories:
 # include:
 #   - /etc/salt/extra_config
-
+<% if node['salt']['master']['include'] -%>
+<%= @include %>
+<% end -%>
 
 #####        Security settings       #####
 ##########################################
@@ -108,16 +108,16 @@
 # authentication, this is only intended for highly secure environments or for
 # the situation where your keys end up in a bad state. If you run in open mode
 # you do so at your own risk!
-#open_mode: False
+open_mode: <%= node['salt']['master']['open_mode'] %>
 
 # Enable auto_accept, this setting will automatically accept all incoming
 # public keys from the minions. Note that this is insecure.
-#auto_accept: False
+auto_accept: <%= node['salt']['master']['auto_accept'] %>
 
 # If the autosign_file is specified only incoming keys specified in
 # the autosign_file will be automatically accepted. This is insecure.
 # Regular expressions as well as globing lines are supported.
-#autosign_file: /etc/salt/autosign.conf
+autosign_file: <%= node['salt']['master']['autosign_file'] %>
 
 # Enable permissive access to the salt keys.  This allows you to run the
 # master or minion as root, but have a non-root group be given access to
@@ -126,8 +126,8 @@
 #
 # If an autosign_file is specified permissive access will allow group access
 # to that specific file.
-#permissive_pki_access: False
-#
+permissive_pki_access: <%= node['salt']['master']['permissive_pki_access'] %>
+
 # Allow users on the master access to execute specific commands on minions.
 # This setting should be treated with care since it opens up execution
 # capabilities to non root users. By default this capability is completely
@@ -151,19 +151,18 @@
 # Manage how master side modules are loaded
 #
 # Add any additional locations to look for master runners
-#runner_dirs: []
-#
+runner_dirs: <%= node['salt']['master']['runner_dirs'] %>
+
 # Enable Cython for master side modules
-#cython_enable: False
-#
+cython_enable: <%= node['salt']['master']['cython_enable'] %>
 
 #####      State System settings     #####
 ##########################################
 # The state system uses a "top" file to tell the minions what environment to
 # use and what modules to use. The state_top file is defined relative to the
 # root of the base environment as defined in "File Server settings" below.
-#state_top: top.sls
-#
+state_top: <%= node['salt']['master']['state_top'] %>
+
 # The master_tops option replaces the external_nodes option by creating
 # a plugable system for the generation of external top data. The external_nodes
 # option is deprecated by the master_tops option.
@@ -174,30 +173,33 @@
 #   ext_nodes: <Shell command which returns yaml>
 #
 #master_tops: {}
-# 
+<% if node['salt']['master']['master_tops'] -%>
+<%= @master_tops %>
+<% end -%>
+
 # The external_nodes option allows Salt to gather data that would normally be
 # placed in a top file. The external_nodes option is the executable that will
 # return the ENC data. Remember that Salt will look for external nodes AND top
 # files and combine the results if both are enabled!
-#external_nodes: None
-#
+external_nodes: <%= node['salt']['master']['external_nodes'] %>
+
 # The renderer to use on the minions to render the state data
-#renderer: yaml_jinja
-#
+renderer: <%= node['salt']['master']['renderer'] %>
+
 # The failhard option tells the minions to stop immediately after the first
 # failure detected in the state execution, defaults to False
-#failhard: False
-#
+failhard: <%= node['salt']['master']['failhard'] %>
+
 # The state_verbose and state_output settings can be used to change the way
 # state system data is printed to the display. By default all data is printed.
 # The state_verbose setting can be set to True or False, when set to False
 # all data that has a result of True and no changes will be suppressed.
-#state_verbose: True
-# 
+state_verbose: <%= node['salt']['master']['state_verbose'] %>
+
 # The state_output setting changes if the output is the full multi line
 # output for each changed state if set to 'full', but if set to 'terse'
 # the output will be shortened to a single line.
-#state_output: full
+state_output: <%= node['salt']['master']['state_output'] %>
 
 #####      File Server settings      #####
 ##########################################
@@ -224,14 +226,17 @@
 #file_roots:
 #  base:
 #    - /srv/salt
+<% if node['salt']['master']['file_roots'] -%>
+<%= @file_roots %>
+<% end -%>
 
 # The hash_type is the hash to use when discovering the hash of a file on
 # the master server, the default is md5, but sha1, sha224, sha256, sha384
 # and sha512 are also supported.
-#hash_type: md5
+hash_type: <%= node['salt']['master']['hash_type'] %>
 
 # The buffer size in the file server can be adjusted here:
-#file_buffer_size: 1048576
+file_buffer_size: <%= node['salt']['master']['file_buffer_size'] %>
 
 # A regular expression (or a list of expressions) that will be matched
 # against the file path before syncing the modules and states to the minions.
@@ -242,6 +247,9 @@
 #file_ignore_regex:
 # - '/\.svn($|/)'
 # - '/\.git($|/)'
+<% if node['salt']['master']['file_ignore_regex'] -%>
+<%= @file_ignore_regex %>
+<% end -%>
 
 # A file glob (or list of file globs) that will be matched against the file
 # path before syncing the modules and states to the minions. This is similar
@@ -250,6 +258,9 @@
 #file_ignore_glob:
 #  - '*.pyc'
 #  - '*/somefolder/*.bak'
+<% if node['salt']['master']['file_ignore_glob'] -%>
+<%= @file_ignore_glob %>
+<% end -%>
 
 # Pillar Configurations:
 # The Salt Pillar, is a system that allows for the building of global data
@@ -266,11 +277,14 @@
 # ext_pillar:
 #   - hiera: /etc/hiera.yaml
 #   - cmd_yaml: cat /etc/salt/yaml
-#
+<% if node['salt']['master']['pillar_roots'] -%>
+<%= @pillar_roots %>
+<% end -%>
+
 # The pillar_opts option adds the master configuration file data to a dict in
 # the pillar called "master". This is used to set simple configurations in the
 # master config file that can then be used on minions.
-#pillar_opts: True
+pillar_opts: <%= node['salt']['master']['pillar_opts'] %>
 
 #####          Syndic settings       #####
 ##########################################
@@ -283,11 +297,13 @@
 #
 # Set the order_masters setting to True if this master will command lower
 # masters' syndic interfaces.
-#order_masters: False
-#
+order_masters: <%= node['salt']['master']['order_masters'] %>
+
 # If this master will be running a salt syndic daemon, syndic_master tells
 # this master where to receive commands from.
-#syndic_master: masterofmaster
+<% if node['salt']['master']['syndic_master'] -%>
+syndic_master: <%= node['salt']['master']['syndic_master'] %>
+<% end -%>
 
 #####      Peer Publish settings     #####
 ##########################################
@@ -311,7 +327,10 @@
 #       - .*
 # This is not recommended, since it would allow anyone who gets root on any
 # single minion to instantly have root on all of the minions!
-#
+<% if node['salt']['master']['peer'] -%>
+<%= @peer %>
+<% end -%>
+
 # Minions can also be allowed to execute runners from the salt master.
 # Since executing a runner from the minion could be considered a security risk,
 # it needs to be enabled. This setting functions just like the peer setting
@@ -329,51 +348,52 @@
 # peer_run:
 #   foo.example.com:
 #     - manage.up
-#
+<% if node['salt']['master']['peer_run'] -%>
+<%= @peer_run %>
+<% end -%>
 
 #####         Logging settings       #####
 ##########################################
 # The location of the master log file
 # This can be a path for the log file, or, this can be, since 0.10.6, a system
 # logger address, for example:
-#	tcp://localhost:514/LOG_USER
-#	tcp://localhost/LOG_DAEMON
-#	udp://localhost:5145/LOG_KERN
-#	udp://localhost
-#	file:///dev/log
-#	file:///dev/log/LOG_SYSLOG
-#	file:///dev/log/LOG_DAEMON
+# tcp://localhost:514/LOG_USER
+# tcp://localhost/LOG_DAEMON
+# udp://localhost:5145/LOG_KERN
+# udp://localhost
+# file:///dev/log
+# file:///dev/log/LOG_SYSLOG
+# file:///dev/log/LOG_DAEMON
 #
 # The above examples are self explanatory, but:
-#	<file|udp|tcp>://<host|socketpath>:<port-if-required>/<log-facility>
+# <file|udp|tcp>://<host|socketpath>:<port-if-required>/<log-facility>
 #
 # Make sure you have a properly configured syslog or you won't get any warnings
 #
-#log_file: /var/log/salt/master
-#key_logfile: /var/log/salt/key
-#
+log_file: <%= node['salt']['master']['log_file'] %>
+key_logfile: <%= node['salt']['master']['key_logfile'] %>
+
 # The level of messages to send to the console.
 # One of 'garbage', 'trace', 'debug', info', 'warning', 'error', 'critical'.
 # Default: 'warning'
-#log_level: warning
-#
+log_level: <%= node['salt']['master']['log_level'] %>
+
 # The level of messages to send to the log file.
 # One of 'garbage', 'trace', 'debug', info', 'warning', 'error', 'critical'.
 # Default: 'warning'
-#log_level_logfile:
+log_level_logfile: <%= node['salt']['master']['log_level_logfile'] %>
 
-#
 # The date and time format used in log messages. Allowed date/time formating
 # can be seen here:
-#	http://docs.python.org/library/time.html#time.strftime
-#log_datefmt: '%Y-%m-%d %H:%M:%S'
-#
+# http://docs.python.org/library/time.html#time.strftime
+log_datefmt: <%= node['salt']['master']['log_datefmt'] %>
+
 # The format of the console logging messages. Allowed formatting options can
 # be seen here:
-#	http://docs.python.org/library/logging.html#logrecord-attributes
-#log_fmt_console: '[%(levelname)-8s] %(message)s'
-#log_fmt_logfile: '%(asctime)s,%(msecs)03.0f [%(name)-17s][%(levelname)-8s] %(message)s'
-#
+# http://docs.python.org/library/logging.html#logrecord-attributes
+log_fmt_console: <%= node['salt']['master']['log_fmt_console'] %>
+log_fmt_logfile: <%= node['salt']['master']['log_fmt_logfile'] %>
+
 # Logger levels can be used to tweak specific loggers logging levels.
 # For example, if you want to have the salt library at the 'warning' level,
 # but you still wish to have 'salt.modules' at the 'debug' level:
@@ -381,8 +401,9 @@
 #     'salt': 'warning',
 #     'salt.modules': 'debug'
 #
-#log_granular_levels: {}
-
+<% if node['salt']['master']['log_granular_levels'] -%>
+log_granular_levels: <%= node['salt']['master']['log_granular_levels'] %>
+<% end -%>
 
 #####         Node Groups           #####
 ##########################################
@@ -392,10 +413,13 @@
 # nodegroups:
 #   group1: 'L@foo.domain.com,bar.domain.com,baz.domain.com and bl*.domain.com'
 #   group2: 'G@os:Debian and foo.domain.com'
+<% if node['salt']['master']['nodegroups'] -%>
+<%= @nodegroups %>
+<% end -%>
 
 #####     Range Cluster settings     #####
 ##########################################
 # The range server (and optional port) that serves your cluster information
 # https://github.com/grierj/range/wiki/Introduction-to-Range-with-YAML-files
 #
-# range_server: range:80
+range_server: <%= node['salt']['master']['range_server'] %>

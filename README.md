@@ -33,9 +33,7 @@ Attributes
   assumed to be the fingerprint.
 
 Minion configuration is handled via the following attributes.  View the
-minion template to better understand the options.  Did not implement the
-"module configuration" section of the config, since I do not understand
-it well enough yet.
+minion template to better understand the options.
 
 * `default['salt']['minion']['master']`
 * `default['salt']['minion']['master_port']`
@@ -93,8 +91,8 @@ default['salt']['minion']['file_roots']
     "minion":
         "file_roots": {
             "base": [
-              "/srv/salt/dev/services",
-              "/srv/salt/dev/state"
+                "/srv/salt/dev/services",
+                "/srv/salt/dev/state"
             ]
         }
     }
@@ -108,8 +106,187 @@ default['salt']['minion']['pillar_roots']
     "minion":
         "pillar_roots": {
             "base": [
-              "/srv/pillar"
+                "/srv/pillar"
             ]
+        }
+    }
+]
+```
+
+Master configuration is handled via the following attributes.  View the
+master template to better understand the options.
+
+* `default['salt']['master']['default_include']`
+* `default['salt']['master']['interface']`
+* `default['salt']['master']['publish_port']`
+* `default['salt']['master']['user']`
+* `default['salt']['master']['max_open_files']`
+* `default['salt']['master']['worker_threads']`
+* `default['salt']['master']['ret_port']`
+* `default['salt']['master']['pidfile']`
+* `default['salt']['master']['root_dir']`
+* `default['salt']['master']['pki_dir']`
+* `default['salt']['master']['cachedir']`
+* `default['salt']['master']['verify_env']`
+* `default['salt']['master']['keep_jobs']`
+* `default['salt']['master']['timeout']`
+* `default['salt']['master']['sock_dir']`
+* `default['salt']['master']['job_cache']`
+* `default['salt']['master']['minion_data_cache']`
+* `default['salt']['master']['include']`
+* `default['salt']['master']['open_mode']`
+* `default['salt']['master']['auto_accept']`
+* `default['salt']['master']['autosign_file']`
+* `default['salt']['master']['permissive_pki_access']`
+* `# default['salt']['master']['client_acl']`
+* `# default['salt']['master']['external_auth']`
+* `default['salt']['master']['runner_dirs']`
+* `default['salt']['master']['cython_enable']`
+* `default['salt']['master']['state_top']`
+* `default['salt']['master']['master_tops']`
+* `default['salt']['master']['external_nodes']`
+* `default['salt']['master']['renderer']`
+* `default['salt']['master']['failhard']`
+* `default['salt']['master']['state_verbose']`
+* `default['salt']['master']['state_output']`
+* `default['salt']['master']['file_roots']`
+* `default['salt']['master']['hash_type']`
+* `default['salt']['master']['file_buffer_size']`
+* `default['salt']['master']['file_ignore_regex']`
+* `default['salt']['master']['file_ignore_glob']`
+* `default['salt']['master']['pillar_roots']`
+* `default['salt']['master']['pillar_opts']`
+* `default['salt']['master']['order_masters']`
+* `default['salt']['master']['syndic_master']`
+* `default['salt']['master']['peer']`
+* `default['salt']['master']['peer_run']`
+* `default['salt']['master']['log_file']`
+* `default['salt']['master']['key_logfile']`
+* `default['salt']['master']['log_level']`
+* `default['salt']['master']['log_level_logfile']`
+* `default['salt']['master']['log_datefmt']`
+* `default['salt']['master']['log_fmt_console']`
+* `default['salt']['master']['log_fmt_logfile']`
+* `default['salt']['master']['log_granular_levels']`
+* `default['salt']['master']['nodegroups']`
+* `default['salt']['master']['range_server']`
+
+
+default['salt']['master']['include']
+
+```json
+"salt": {
+    "master":
+        "include": [
+            "/etc/salt/extra_config"
+        ]
+    }
+]
+```
+
+default['salt']['master']['master_tops']
+
+```json
+"salt": {
+    "master":
+        "master_tops": {
+            "ext_nodes": "Shell command which returns yaml"
+        }
+    }
+]
+```
+
+default['salt']['master']['file_roots']
+
+```json
+"salt": {
+    "master":
+        "file_roots": {
+            "base": [
+                "/srv/salt/dev/services",
+                "/srv/salt/dev/state"
+            ]
+        }
+    }
+]
+```
+
+default['salt']['master']['file_ignore_regex']
+
+```json
+"salt": {
+    "master":
+        "ignore_regex": [
+            "/\.svn($|/)",
+            "/\.git($|/)"
+        ]
+    }
+]
+```
+
+default['salt']['master']['file_ignore_glob']
+
+```json
+"salt": {
+    "master":
+        "ignore_glob": [
+            "*.pyc",
+            "*/somefolder/*.bak"
+        ]
+    }
+]
+```
+
+default['salt']['master']['pillar_roots']
+
+```json
+"salt": {
+    "master":
+        "pillar_roots": {
+            "base": [
+                "/srv/pillar"
+            ]
+        }
+    }
+]
+```
+
+default['salt']['master']['peer']
+
+```json
+"salt": {
+    "master":
+        "peer": {
+            "foo.example.com": [
+                "test.*" 
+            ]
+        }
+    }
+]
+```
+
+default['salt']['master']['peer_run']
+
+```json
+"salt": {
+    "master":
+        "peer_run": {
+            "foo.example.com": [
+                "manage.up" 
+            ]
+        }
+    }
+]
+```
+
+default['salt']['master']['nodegroups']
+
+```json
+"salt": {
+    "master":
+        "nodegroups": {
+            "group1": "L@foo.domain.com,bar.domain.com,baz.domain.com and bl*.domain.com",
+            "group2": "G@os:Debian and foo.domain.com"
         }
     }
 ]
