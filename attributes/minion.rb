@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-default['salt']['minion']['master'] = "salt" 
+default['salt']['minion']['master'] = "salt"
 default['salt']['minion']['master_port'] = 4506
 default['salt']['minion']['user'] = "root"
 default['salt']['minion']['root_dir'] = "/"
@@ -25,7 +25,7 @@ default['salt']['minion']['pki_dir'] = "/etc/salt/pki"
 default['salt']['minion']['id'] = nil
 default['salt']['minion']['append_domain'] = nil
 default['salt']['minion']['sub_timeout'] = "60"
-default['salt']['minion']['cachedir'] = "/var/cache/salt" 
+default['salt']['minion']['cachedir'] = "/var/cache/salt"
 default['salt']['minion']['cache_jobs'] = "False"
 default['salt']['minion']['acceptance_wait_time'] = 10
 default['salt']['minion']['dns_check'] = "True"
