@@ -30,3 +30,7 @@ default['salt']['apt']['components'] = ["main"]
 default['salt']['apt']['deb_src'] = true
 default['salt']['apt']['keyserver'] = "keyserver.ubuntu.com"
 default['salt']['apt']['key'] = "0E27C0A6"
+
+default['salt']['yum']['repo'] = 'epel'
+default['salt']['yum']['mirrorlist'] = 'http://mirrors.fedoraproject.org/mirrorlist?repo=epel-6&arch=$basearch'
+default['salt']['yum']['key'] = 'http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-6'

@@ -1,0 +1,13 @@
+DEPENDENCIES
+  salt
+    path: .
+    metadata: true
+
+GRAPH
+  apt (2.7.0)
+  cron (1.6.1)
+  salt (0.1.3)
+    apt (>= 0.0.0)
+    cron (>= 0.0.0)
+    yum (>= 0.0.0)
+  yum (3.5.3)

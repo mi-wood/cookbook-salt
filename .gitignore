@@ -3,3 +3,5 @@ Cheffile.lock
 .cache
 /cookbooks
 /tmp
+.rake_tasks
+.kitchen

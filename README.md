@@ -6,12 +6,12 @@ Installs/Configures salt
 Currently experimenting with Ubuntu.  Feel free to send pull requests for
 additional distros.
 
+The cron script can also be abstracted
+
 Requirements
 ============
 
-* Chef 0.8+
-* apt
-* Ubuntu >= 12.04
+Defined in Gemfile
 
 Attributes
 ==========
@@ -328,16 +328,19 @@ Installs/Configures salt minion
 ]
 ```
 
+cron
+----
+Sets up a cron job to clean up keys based on an AWS VPC
+
 Testing
 =====
 
 This cookbook is using [ChefSpec](https://github.com/acrmp/chefspec) for testing.
+It's currently tested with Ruby 2.2.0
 
     $ cd $repo
-    $ bundle
-    $ librarian-chef install
-    $ ln -s ../ cookbooks/salt
-    $ rspec cookbooks/salt
+    $ bundle install
+    $ rake test
 
 License and Author
 ==================

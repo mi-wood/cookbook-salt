@@ -1,0 +1,50 @@
+# This is for linting non-chef ruby files
+# May extend to lint library files
+AllCops:
+  Include:
+    - '**/Berksfile'
+    - '**/Gemfile'
+    - '**/Rakefile'
+    - '.rspec'
+  Exclude:
+    - 'build/**/*'
+    - 'attributes/**/*'
+    - '/definitions/**/*'
+    - 'metadata.rb'
+    - 'providers/**/*'
+    - 'recipes/**/*'
+    - 'resources/**/*'
+    - 'test/**/*'
+    - 'vendor/**/*'
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/ClassLength:
+  CountComments: false 
+  Max: 160
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Max: 20
+
+Style/AccessorMethodName:
+  Enabled: false
+
+Style/GlobalVars:
+  Enabled: false
+
+Style/IndentHash:
+  Enabled: false
+
+Style/RedundantReturn:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/TrailingComma:
+  Enabled: false
+

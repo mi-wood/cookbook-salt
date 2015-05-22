@@ -16,12 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 class ::Chef::Recipe
   include ::Opscode::Salt
 end
 
-include_recipe "salt::apt"
+include_recipe "salt::add_repo"
 
 if node['salt']['master']['include']
   incl = yamlize "include", node['salt']['master']['include']
@@ -59,15 +58,16 @@ if node['salt']['master']['nodegroups']
   nodegroups = yamlize "nodegroups", node['salt']['master']['nodegroups']
 end
 
+package "salt-master" do
+  action :install
+end
+
 service "salt-master" do
   supports :restart => true
 
   action [ :enable, :start ]
 end
 
-package "salt-master" do
-  action :install
-end
 
 template ::File.join(node['salt']['conf_dir'], "master") do
   source "master.erb"
@@ -89,3 +89,4 @@ template ::File.join(node['salt']['conf_dir'], "master") do
 
   notifies :restart, "service[salt-master]"
 end
+

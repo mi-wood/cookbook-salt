@@ -21,7 +21,7 @@ class ::Chef::Recipe
   include ::Opscode::Salt
 end
 
-include_recipe "salt::apt"
+include_recipe "salt::add_repo"
 
 if node['salt']['master_search']
   result = search :node, node["salt"]["master_search"]
@@ -42,15 +42,16 @@ if node['salt']['minion']['pillar_roots']
   pillar_roots = yamlize "pillar_roots", node['salt']['minion']['pillar_roots']
 end
 
+package "salt-minion" do
+  action :install
+end
+
 service "salt-minion" do
   supports :restart => true
 
   action [ :enable, :start ]
 end
 
-package "salt-minion" do
-  action :install
-end
 
 template ::File.join(node['salt']['conf_dir'], "minion") do
   source "minion.erb"

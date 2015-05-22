@@ -1,6 +1,6 @@
 #
-# Library:: salt
-# Recipe:: default
+# Cookbook Name:: salt
+# Recipe:: apt
 #
 # Copyright 2013, John Dewey
 #
@@ -17,15 +17,20 @@
 # limitations under the License.
 #
 
-require 'yaml'
-
-module Opscode
-  # Chef helpers for salt cookbook
-  module Salt
-    def yamlize(key, enum)
-      e = {}
-      e[key] = enum.is_a?(Hash) ? enum.to_hash : enum
-      e.to_yaml.sub(/\A---\n/, '')
-    end
+case node["platform_family"]
+when "debian"
+  apt_repository "salt" do
+    uri node['salt']['apt']['uri']
+    distribution node['salt']['apt']['distribution']
+    components node['salt']['apt']['components']
+    deb_src node['salt']['apt']['deb_src']
+    keyserver node['salt']['apt']['keyserver']
+    key node['salt']['apt']['key']
+  end
+when "rhel"
+  yum_repository node['salt']['yum']['repo'] do
+    mirrorlist node['salt']['yum']['mirrorlist']
+    gpgkey node['salt']['yum']['key']
+    action :create
   end
 end
